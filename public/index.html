@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="box">
+        <form action="/qrcode" id="form">
+            <div class="content">
+            <label for="url">Enter Your TEXT or URL :</label>
+            <input type="text" id="url" name="url">
+            <button class="submit"type="submit">Generate URL</button></div>
+        </form>
+        <div id="generatedQR"></div>
+    </div>
+    <script>
+        document.getElementById('form').addEventListener('submit', (e)=>{
+            e.preventDefault();
+            const url = document.getElementById('url').value;
+            fetch('/qrcode',{
+                method : 'POST',
+                headers : {'content-type' : 'application/json',},
+                body: JSON.stringify({url})
+
+            })
+            .then(response => response.json())
+            .then(data=>{
+                const generatedQR = document.getElementById('generatedQR');
+                generatedQR.innerHTML = `<img src = "${data.src}"/>
+                <a href="${data.src}" download="qrcode.png" class="download-button">Download QR Code</a>` ;
+            })
+            .catch(err =>{
+                console.log(err);
+            })
+        })
+    </script>
+</body>
+</html>
